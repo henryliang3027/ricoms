@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class MenuPage extends StatefulWidget {
+  const MenuPage({Key? key}) : super(key: key);
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  State<MenuPage> createState() => _MenuPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  final String _title = 'History';
+class _MenuPageState extends State<MenuPage> {
+  final String _title = 'Menu';
   @override
   Widget build(BuildContext context) {
     return Scaffold(

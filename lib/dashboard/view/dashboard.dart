@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HistoryPage extends StatefulWidget {
-  const HistoryPage({Key? key}) : super(key: key);
+class DashboardPage extends StatefulWidget {
+  const DashboardPage({Key? key}) : super(key: key);
 
   @override
-  State<HistoryPage> createState() => _HistoryPageState();
+  State<DashboardPage> createState() => _DashboardPageState();
 }
 
-class _HistoryPageState extends State<HistoryPage> {
-  final String _title = 'History';
+class _DashboardPageState extends State<DashboardPage> {
+  final String _title = 'Dashboard';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
