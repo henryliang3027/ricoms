@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:ricoms/history/data/data.dart';
-import 'package:ricoms/history/model/user.dart';
+import 'package:ricoms/history/model/client.dart';
 
 class TablePage extends StatefulWidget {
   const TablePage({Key? key}) : super(key: key);

@@ -1,98 +1,91 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
-import 'package:ricoms/dashboard/view/dashboard.dart';
-import 'package:ricoms/history/view/history.dart';
-import 'package:ricoms/history/view/table.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms/authentication/bloc/authentication_bloc.dart';
+import 'package:ricoms/home/view/home_page.dart';
 import 'package:ricoms/login/view/login_page.dart';
-import 'package:ricoms/menu/view/menu.dart';
-import 'package:ricoms/realtime_alarm/view/alarm.dart';
-import 'package:ricoms/realtime_alarm/view/alarm2.dart';
+import 'package:user_repository/user_repository.dart';
 
 class App extends StatelessWidget {
-  const App({Key? key}) : super(key: key);
+  const App({
+    Key? key,
+    required this.authenticationRepository,
+    required this.userRepository,
+  }) : super(key: key);
 
-  static const String _title = 'Ricoms';
+  final AuthenticationRepository authenticationRepository;
+  final UserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      title: _title,
-      home: LoginPage(),
+    return RepositoryProvider.value(
+      value: authenticationRepository,
+      child: BlocProvider(
+        create: (_) => AuthenticationBloc(
+          authenticationRepository: authenticationRepository,
+          userRepository: userRepository,
+        ),
+        child: const AppView(),
+      ),
     );
   }
 }
 
-class AppPages extends StatefulWidget {
-  const AppPages({Key? key}) : super(key: key);
+class AppView extends StatefulWidget {
+  const AppView({Key? key}) : super(key: key);
 
   @override
-  State<AppPages> createState() => _AppPagesState();
+  _AppViewState createState() => _AppViewState();
 }
 
-class _AppPagesState extends State<AppPages> {
-  int _selectedIndex = 0;
-  final PageController _pageController = PageController();
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    DashboardPage(),
-    HistoryPage(),
-    RealTimeAlarmPage(),
-    MenuPage(),
-  ];
+class _AppViewState extends State<AppView> {
+  final _navigatorKey = GlobalKey<NavigatorState>();
 
-  void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-      _pageController.animateToPage(
-        _selectedIndex,
-        duration: const Duration(milliseconds: 100),
-        curve: Curves.bounceIn,
-      );
-    });
+  NavigatorState get _navigator => _navigatorKey.currentState!;
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      navigatorKey: _navigatorKey,
+      builder: (context, child) {
+        return BlocListener<AuthenticationBloc, AuthenticationState>(
+          listener: (context, state) {
+            switch (state.status) {
+              case AuthenticationStatus.authenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  HomePage.route(),
+                  (route) => false,
+                );
+                break;
+              case AuthenticationStatus.unauthenticated:
+                _navigator.pushAndRemoveUntil<void>(
+                  LoginPage.route(),
+                  (route) => false,
+                );
+                break;
+              default:
+                break;
+            }
+          },
+          child: child,
+        );
+      },
+      onGenerateRoute: (_) => SplashPage.route(),
+    );
+  }
+}
+
+class SplashPage extends StatelessWidget {
+  const SplashPage({Key? key}) : super(key: key);
+
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => const SplashPage());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // appBar: AppBar(
-      //   title: const Text('BottomNavigationBar Sample'),
-      // ),
-      body: PageView(
-        controller: _pageController,
-        children: _widgetOptions,
-        onPageChanged: (pageIndex) {
-          setState(() {
-            _selectedIndex = pageIndex;
-          });
-        },
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history_outlined),
-            label: 'History',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_active_outlined),
-            label: 'Alarm',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            label: 'Menu',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Colors.amber[800],
-        unselectedItemColor: Colors.amber[600],
-        onTap: _onItemTapped,
-      ),
+    return const Scaffold(
+      body: Center(child: CircularProgressIndicator()),
     );
   }
 }

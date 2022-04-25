@@ -1,25 +1,30 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:ricoms/login/bloc/login_bloc.dart';
+import 'package:ricoms/login/view/login_form.dart';
 
-class LoginPage extends StatefulWidget {
-  const LoginPage({Key? key}) : super(key: key);
+class LoginPage extends StatelessWidget {
+  static Route route() {
+    return MaterialPageRoute<void>(builder: (_) => LoginPage());
+  }
 
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
+    return Scaffold(
+      body: Container(
         color: Colors.black,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
-            Image(
-              image: AssetImage('assets/ricoms_logo.png'),
-            ),
-          ],
+        child: Padding(
+          padding: const EdgeInsets.all(12),
+          child: BlocProvider(
+            create: (context) {
+              return LoginBloc(
+                authenticationRepository:
+                    RepositoryProvider.of<AuthenticationRepository>(context),
+              );
+            },
+            child: const LoginForm(),
+          ),
         ),
       ),
     );

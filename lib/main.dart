@@ -1,6 +1,13 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:ricoms/app.dart';
+import 'package:user_repository/user_repository.dart';
 
 void main() {
-  runApp(const App());
+  runApp(
+    App(
+      authenticationRepository: AuthenticationRepository(),
+      userRepository: UserRepository(),
+    ),
+  );
 }

@@ -1,4 +1,4 @@
-import 'package:ricoms/history/model/user.dart';
+import 'package:ricoms/history/model/client.dart';
 
 final allUsers = <User>[
   const User(firstName: 'Emma', lastName: 'Field', age: 37, bloodType: 'O'),
